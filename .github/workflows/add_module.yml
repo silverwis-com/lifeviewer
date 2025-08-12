@@ -1,0 +1,52 @@
+name: Add Hugo Theme
+on:
+  workflow_dispatch:
+jobs:
+  add-theme:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          submodules: true  # 기존 submodule도 체크아웃
+      - name: Remove existing theme completely
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          
+          # 모든 가능한 위치에서 hugoplate 제거
+          echo "Removing any existing hugoplate..."
+          
+          # submodule로 등록된 경우
+          if [ -f .gitmodules ]; then
+            git submodule deinit -f hugoplate 2>/dev/null || true
+            git submodule deinit -f themes/hugoplate 2>/dev/null || true
+          fi
+          
+          # Git 인덱스에서 제거
+          git rm -rf hugoplate 2>/dev/null || true
+          git rm -rf themes/hugoplate 2>/dev/null || true
+          
+          # 실제 폴더 삭제
+          rm -rf hugoplate themes/hugoplate
+          rm -rf .git/modules/hugoplate .git/modules/themes/hugoplate
+          
+          # themes 디렉토리 생성
+          mkdir -p themes
+          
+          git add .
+          git commit -m "Clean up existing hugoplate references" || echo "No changes to commit"
+          git push || echo "Nothing to push"
+          
+      - name: Add hugoplate theme as submodule
+        run: |
+          git submodule add https://github.com/zeon-studio/hugoplate.git themes/hugoplate
+          git add .
+          git commit -m "Add hugoplate theme as git submodule in themes folder"
+          git push
+          
+      - name: Verify theme installation
+        run: |
+          echo "테마 설치 완료!"
+          ls -la themes/ || echo "themes folder not found"
+          cat .gitmodules || echo ".gitmodules not found"
