@@ -12,16 +12,17 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Remove existing theme folder
+      - name: Remove existing hugoplate folder
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add .
+          git commit -m "Remove existing hugoplate folder" || echo "No changes to commit"
           git push || echo "Nothing to push"
 
-      - name: Add PaperMod theme as submodule
+      - name: Add hugoplate theme as submodule  
         run: |
-          git submodule add https://github.com/zeon-studio/hugoplate.git
+          git submodule add https://github.com/zeon-studio/hugoplate.git themes/hugoplate
           git add .
           git commit -m "Add hugoplate theme as git submodule"
           git push
