@@ -1,0 +1,144 @@
+name: Fix All Missing Partials
+on:
+  workflow_dispatch:
+jobs:
+  fix-partials:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          submodules: true
+          
+      - name: Create all missing partials
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          
+          # layouts/partials 디렉토리 생성
+          mkdir -p layouts/partials
+          
+          # 1. manifest.html partial 생성
+          cat > layouts/partials/manifest.html << 'EOF'
+          <!-- Web App Manifest -->
+          <link rel="manifest" href="{{ "site.webmanifest" | absURL }}">
+          EOF
+          
+          # 2. favicon.html partial 업데이트 (이미 있다면 덮어쓰기)
+          cat > layouts/partials/favicon.html << 'EOF'
+          <!-- Favicon -->
+          <link rel="icon" type="image/x-icon" href="{{ "images/favicon.ico" | absURL }}">
+          <link rel="apple-touch-icon" sizes="180x180" href="{{ "images/apple-touch-icon.png" | absURL }}">
+          <link rel="icon" type="image/png" sizes="32x32" href="{{ "images/favicon-32x32.png" | absURL }}">
+          <link rel="icon" type="image/png" sizes="16x16" href="{{ "images/favicon-16x16.png" | absURL }}">
+          EOF
+          
+          # 3. 기본 site.webmanifest 파일 생성
+          cat > static/site.webmanifest << 'EOF'
+          {
+            "name": "Hugo Site",
+            "short_name": "Hugo",
+            "icons": [
+              {
+                "src": "/images/favicon-32x32.png",
+                "sizes": "32x32",
+                "type": "image/png"
+              }
+            ],
+            "theme_color": "#ffffff",
+            "background_color": "#ffffff",
+            "display": "standalone"
+          }
+          EOF
+          
+          echo "Created missing partials:"
+          ls -la layouts/partials/
+          echo "Created manifest file:"
+          ls -la static/
+          
+      - name: Check theme head.html for other missing partials
+        run: |
+          echo "=== Checking theme head.html for partial calls ==="
+          if [ -f themes/hugoplate/layouts/partials/essentials/head.html ]; then
+            echo "Found theme head.html, checking for partial calls:"
+            grep -n "partial\|partialCached" themes/hugoplate/layouts/partials/essentials/head.html || echo "No partial calls found"
+          else
+            echo "Theme head.html not found"
+          fi
+          
+      - name: Override head.html to be safe
+        run: |
+          # essentials 디렉토리 생성
+          mkdir -p layouts/partials/essentials
+          
+          # 안전한 head.html 생성 (누락된 partial 없이)
+          cat > layouts/partials/essentials/head.html << 'EOF'
+          <!-- Meta Tags -->
+          <meta charset="utf-8">
+          <meta http-equiv="X-UA-Compatible" content="IE=edge">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          
+          <!-- Title -->
+          <title>{{ if .IsHome }}{{ site.Title }}{{ else }}{{ .Title }} | {{ site.Title }}{{ end }}</title>
+          
+          <!-- Meta Description -->
+          {{ if .Description }}
+          <meta name="description" content="{{ .Description }}">
+          {{ else if .Summary }}
+          <meta name="description" content="{{ .Summary }}">
+          {{ else }}
+          <meta name="description" content="{{ site.Params.description | default site.Title }}">
+          {{ end }}
+          
+          <!-- Favicon -->
+          {{ partial "favicon" . }}
+          
+          <!-- Manifest -->
+          {{ partial "manifest" . }}
+          
+          <!-- Canonical URL -->
+          <link rel="canonical" href="{{ .Permalink }}">
+          
+          <!-- Open Graph -->
+          <meta property="og:title" content="{{ .Title }}">
+          <meta property="og:description" content="{{ .Description | default .Summary | default site.Params.description }}">
+          <meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}">
+          <meta property="og:url" content="{{ .Permalink }}">
+          
+          <!-- CSS -->
+          {{ $styles := resources.Get "scss/main.scss" | toCSS | minify }}
+          <link rel="stylesheet" href="{{ $styles.Permalink }}">
+          EOF
+          
+          echo "Created safe head.html override"
+          
+      - name: Commit all changes
+        run: |
+          git add .
+          git commit -m "Add all missing partials and override head.html"
+          git push
+          
+      - name: Test build
+        run: |
+          # Hugo 설치 (이미 있으면 스킵)
+          if [ ! -f ./hugo ]; then
+            wget -q https://github.com/gohugoio/hugo/releases/download/v0.146.0/hugo_extended_0.146.0_linux-amd64.tar.gz
+            tar -xzf hugo_extended_0.146.0_linux-amd64.tar.gz
+            chmod +x hugo
+          fi
+          
+          # Submodule 업데이트
+          git submodule update --init --recursive
+          
+          # 빌드 테스트
+          echo "=== Testing Hugo build ==="
+          ./hugo --minify
+          
+          if [ $? -eq 0 ]; then
+            echo "✅ Build successful!"
+            echo "Generated files:"
+            ls -la public/ | head -10
+          else
+            echo "❌ Build failed"
+            exit 1
+          fi
