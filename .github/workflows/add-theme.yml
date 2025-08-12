@@ -1,8 +1,11 @@
-git submodule deinit -f hugoplate
-git rm -f hugoplate
-rm -rf .git/modules/hugoplate
-
-# 변경사항 커밋
-git add .
-git commit -m "Remove hugoplate submodule from root"
-git push
+- name: Remove existing hugoplate from root
+  run: |
+    git config user.name "github-actions"
+    git config user.email "github-actions@github.com"
+    
+    # submodule인지 확인 후 제거
+    if [ -f .gitmodules ] && grep -q "hugoplate" .gitmodules; then
+      git submodule deinit -f hugoplate
+      git rm -f hugoplate
+      rm -rf .git/modules/hugoplate
+    else
