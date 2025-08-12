@@ -1,0 +1,63 @@
+name: Fix Favicon Issue
+on:
+  workflow_dispatch:
+jobs:
+  fix-favicon:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          submodules: true
+          
+      - name: Create missing favicon partial
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          
+          # layouts/partials 디렉토리 생성 (루트에, 테마를 오버라이드)
+          mkdir -p layouts/partials
+          
+          # favicon.html partial 생성
+          cat > layouts/partials/favicon.html << 'EOF'
+          <!-- Favicon -->
+          <link rel="icon" type="image/x-icon" href="{{ "images/favicon.ico" | absURL }}">
+          <link rel="apple-touch-icon" sizes="180x180" href="{{ "images/apple-touch-icon.png" | absURL }}">
+          <link rel="icon" type="image/png" sizes="32x32" href="{{ "images/favicon-32x32.png" | absURL }}">
+          <link rel="icon" type="image/png" sizes="16x16" href="{{ "images/favicon-16x16.png" | absURL }}">
+          <link rel="manifest" href="{{ "images/site.webmanifest" | absURL }}">
+          EOF
+          
+          echo "Created favicon.html partial"
+          cat layouts/partials/favicon.html
+          
+      - name: Create basic favicon files
+        run: |
+          # static/images 디렉토리 생성
+          mkdir -p static/images
+          
+          # 기본 favicon.ico 생성 (1x1 투명 픽셀)
+          echo "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==" | base64 -d > static/images/favicon.ico
+          
+          echo "Created basic favicon files"
+          ls -la static/images/
+          
+      - name: Commit changes
+        run: |
+          git add .
+          git commit -m "Add missing favicon partial and basic favicon files"
+          git push
+          
+      - name: Test build locally
+        run: |
+          # Hugo 설치
+          wget https://github.com/gohugoio/hugo/releases/download/v0.146.0/hugo_extended_0.146.0_linux-amd64.tar.gz
+          tar -xzf hugo_extended_0.146.0_linux-amd64.tar.gz
+          chmod +x hugo
+          
+          # 테스트 빌드
+          git submodule update --init --recursive
+          ./hugo --minify
+          
+          echo "Build successful!"
+          ls -la public/
