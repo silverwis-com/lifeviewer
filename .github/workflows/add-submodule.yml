@@ -1,0 +1,21 @@
+name: Add Submodule
+
+on:
+  workflow_dispatch:  # 수동 실행
+
+jobs:
+  add-submodule:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Add submodule
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git submodule add https://github.com/zeon-studio/hugoplate.git themes/hugoplate
+        git add .
+        git commit -m "Add hugoplate theme as submodule"
+        git push
