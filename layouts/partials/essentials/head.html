@@ -1,0 +1,35 @@
+<!-- Meta Tags -->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Title -->
+<title>{{ if .IsHome }}{{ site.Title }}{{ else }}{{ .Title }} | {{ site.Title }}{{ end }}</title>
+
+<!-- Meta Description -->
+{{ if .Description }}
+<meta name="description" content="{{ .Description }}">
+{{ else if .Summary }}
+<meta name="description" content="{{ .Summary }}">
+{{ else }}
+<meta name="description" content="{{ site.Params.description | default site.Title }}">
+{{ end }}
+
+<!-- Favicon -->
+{{ partial "favicon" . }}
+
+<!-- Manifest -->
+{{ partial "manifest" . }}
+
+<!-- Canonical URL -->
+<link rel="canonical" href="{{ .Permalink }}">
+
+<!-- Open Graph -->
+<meta property="og:title" content="{{ .Title }}">
+<meta property="og:description" content="{{ .Description | default .Summary | default site.Params.description }}">
+<meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}">
+<meta property="og:url" content="{{ .Permalink }}">
+
+<!-- CSS -->
+{{ $styles := resources.Get "scss/main.scss" | toCSS | minify }}
+<link rel="stylesheet" href="{{ $styles.Permalink }}">
