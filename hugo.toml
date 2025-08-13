@@ -59,7 +59,7 @@ buildExpired = false
   # 소셜 아이콘
   [[params.socialIcons]]
     name = "github"
-    url = "https://cen.lifeviewer.win"
+    url = "https://github.com/silverwis-com"
   
   [[params.socialIcons]]
     name = "email"
