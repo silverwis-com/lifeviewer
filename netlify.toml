@@ -1,16 +1,5 @@
 [build]
-  command = """
-    echo "=== Git 서브모듈 상태 확인 ==="
-    git submodule status
-    echo "=== 서브모듈 초기화 ==="
-    git submodule update --init --recursive --depth=1
-    echo "=== themes 폴더 내용 확인 ==="
-    ls -la themes/
-    echo "=== Hugo 버전 확인 ==="
-    hugo version
-    echo "=== Hugo 빌드 시작 ==="
-    hugo --minify --verbose
-  """
+  command = "git submodule update --init --recursive && hugo --minify"
   publish = "public"
 
 [build.environment]
