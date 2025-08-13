@@ -3,7 +3,8 @@ languageCode = "ko-kr"
 title = "실버위즈 복지정보"
 copyright = "실버위즈 복지정보"
 theme = "PaperMod"
-paginate = 5
+[pagination]
+  pagerSize = 5
 
 enableRobotsTXT = true
 buildDrafts = false
