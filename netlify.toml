@@ -1,6 +1,7 @@
 [build]
-  command = "git submodule update --init --recursive && hugo --minify"
+  command = "hugo mod get -u && hugo --minify"
   publish = "public"
 
 [build.environment]
   HUGO_VERSION = "0.146.0"
+  GO_VERSION = "1.24
