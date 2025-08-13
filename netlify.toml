@@ -1,13 +1,6 @@
 # netlify.toml
 [build]
-  command = """
-    if [ ! -f go.mod ]; then
-      hugo mod init github.com/yourusername/yourrepo
-    fi
-    hugo mod get -u
-    hugo mod tidy
-    hugo --minify
-  """
+  command = "rm -f go.mod go.sum && hugo mod init github.com/yourusername/yourrepo && hugo mod get github.com/zeon-studio/hugoplate@main && hugo --minify"
   publish = "public"
 
 [build.environment]
