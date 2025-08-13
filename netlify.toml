@@ -1,7 +1,15 @@
+# netlify.toml
 [build]
-  command = "hugo mod get -u && hugo --minify"
+  command = """
+    if [ ! -f go.mod ]; then
+      hugo mod init github.com/yourusername/yourrepo
+    fi
+    hugo mod get -u
+    hugo mod tidy
+    hugo --minify
+  """
   publish = "public"
 
 [build.environment]
   HUGO_VERSION = "0.146.0"
-  GO_VERSION = "1.24
+  GO_VERSION = "1.24"
