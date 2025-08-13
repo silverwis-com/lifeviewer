@@ -1,6 +1,4 @@
-
 [build]
-
 command = "rm -f go.mod go.sum && hugo mod init github.com/silverwis-com/lifeviewer && hugo mod get github.com/zeon-studio/hugoplate@main && hugo --minify"  publish = "public"
 
 [build.environment]
