@@ -1,12 +1,7 @@
 [build]
-  command = """
-    rm -f go.mod go.sum
-    hugo mod init github.com/silverwis-com/lifeviewer
-    hugo mod get github.com/adityatelange/hugo-PaperMod
-    hugo --minify
-  """
+  command = "hugo --minify"
   publish = "public"
 
 [build.environment]
-  HUGO_VERSION = "0.146.0"
-  GO_VERSION = "1.24"
+  HUGO_VERSION = "0.146.0"    # 0.128.0에서 0.146.0으로 변경
+  NODE_VERSION = "18"
