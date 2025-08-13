@@ -1,7 +1,7 @@
 # netlify.toml
 [build]
-  command = "rm -f go.mod go.sum && hugo mod init github.com/yourusername/yourrepo && hugo mod get github.com/zeon-studio/hugoplate@main && hugo --minify"
-  publish = "public"
+# netlify.toml의 3번째 줄을 다음과 같이 수정하세요:
+command = "rm -f go.mod go.sum && hugo mod init github.com/silverwis-com/lifeviewer && hugo mod get github.com/zeon-studio/hugoplate@main && hugo --minify"  publish = "public"
 
 [build.environment]
   HUGO_VERSION = "0.146.0"
