@@ -1,0 +1,8 @@
+# 루트/hugo.toml
+baseURL = "https://yoursite.com"
+languageCode = "en-us"
+title = "My Hugo Site"
+
+[module]
+  [[module.imports]]
+    path = "github.com/zeon-studio/hugoplate"
