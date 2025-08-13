@@ -1,5 +1,5 @@
 [build]
-  command = "git submodule update --init --recursive && hugo --minify"
+  command = "git submodule update --init --recursive --depth=1 && ls -la themes/ && hugo --minify"
   publish = "public"
 
 [build.environment]
