@@ -2,7 +2,7 @@
   command = """
     rm -f go.mod go.sum
     hugo mod init github.com/silverwis-com/lifeviewer
-    hugo mod get github.com/zeon-studio/hugoplate@main
+    hugo mod get github.com/adityatelange/hugo-PaperMod
     hugo --minify
   """
   publish = "public"
