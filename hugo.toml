@@ -1,8 +1,18 @@
-# 루트/hugo.toml
-baseURL = "https://yoursite.com"
-languageCode = "en-us"
-title = "My Hugo Site"
+# hugo.toml
+baseURL = "https://silverwis-com-lifeviewer.netlify.app"
+languageCode = "ko"
+title = "Life Viewer"
 
 [module]
   [[module.imports]]
-    path = "github.com/zeon-studio/hugoplate"
+    path = "github.com/adityatelange/hugo-PaperMod"
+
+[params]
+  env = "production"
+  ShowReadingTime = true
+  ShowShareButtons = true
+  ShowPostNavLinks = true
+  ShowBreadCrumbs = true
+  ShowCodeCopyButtons = true
+  ShowWordCount = true
+  defaultTheme = "auto"  # light, dark, auto
