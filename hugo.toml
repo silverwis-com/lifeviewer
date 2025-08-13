@@ -1,7 +1,7 @@
-# hugo.toml
-baseURL = "https://silverwis-com-lifeviewer.netlify.app"
-languageCode = "ko"
-title = "Life Viewer"
+baseURL = "https://blog.silverwis.com"
+languageCode = "ko-kr"
+title = "lifeviewer"
+copyright = "최신 정보"
 
 [module]
   [[module.imports]]
@@ -9,10 +9,53 @@ title = "Life Viewer"
 
 [params]
   env = "production"
+  title = "lifeview"
+  description = "누구나 쉽게 찾는 복지 혜택 정보"
+  
+  # Google AdSense ID
+  googleAdsense = "ca-pub-1279348640476088"
+  
+  # 기본 설정들
   ShowReadingTime = true
   ShowShareButtons = true
   ShowPostNavLinks = true
   ShowBreadCrumbs = true
   ShowCodeCopyButtons = true
   ShowWordCount = true
-  defaultTheme = "auto"  # light, dark, auto
+  ShowRssButtonInSectionTermList = true
+  UseHugoToc = true
+  
+  # 검색 설정
+  [params.fuseOpts]
+    isCaseSensitive = false
+    shouldSort = true
+    location = 0
+    distance = 1000
+    threshold = 0.4
+    minMatchCharLength = 0
+    keys = ["title", "permalink", "summary", "content"]
+
+[[menu.main]]
+  identifier = "home"
+  name = "🏠 홈"
+  url = "/"
+  weight = 10
+
+[[menu.main]]
+  identifier = "categories"
+  name = "📂 카테고리"
+  url = "/categories/"
+  weight = 20
+
+[[menu.main]]
+  identifier = "search"
+  name = "🔍 검색"
+  url = "/search/"
+  weight = 30
+
+[taxonomies]
+  category = "categories"
+  tag = "tags"
+
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
